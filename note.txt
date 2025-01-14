@@ -1,0 +1,3 @@
+
+
+user -> ambil dari mongo -> llm -> vectordb -> llm -> save ke mongo
