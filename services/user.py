@@ -23,7 +23,7 @@ def create_user(username: str, public_address: str):
                "created_at": datetime.now(),
                }
     with conn:
-        # user = coll.insert_one(document=content).inserted_id
+        coll.insert_one(document=content).inserted_id
         content = prompt_generator("Hello, my name is "   + username + ". I am a new player in this world.","user", username)
         return content    
 
