@@ -52,6 +52,9 @@ def prompt_generator(prompts: str, role: str, username: str):
 
     content = message.content
     response = content[0].text
+    print("response")
+    print(response)
+    print("====================================")
     regex_world_update = r"<world_update>\n(.*?)\n</world_update>"
     regex_narrative_response = r"<narrative_response>\n(.*?)\n</narrative_response>"
     regex_available_actions = r"<available_actions>\n(.*?)\n</available_actions>"
@@ -82,3 +85,19 @@ def prompt_generator(prompts: str, role: str, username: str):
         colls.insert_one(logs)
 
     return {"narrative_response": narrative_response, "available_action": available_actions_split}
+
+
+def get_user_history(username: str):
+    conn, coll = get_mongo_client('player_logs')
+    with conn:
+        logs = coll.find({'player_id': username}).sort(
+            'timestamp', -1).limit(3)
+        logs_data = []
+        for log in logs:
+            logs_data.append({
+                "action": log['action'],
+                "description": log['description'],
+                "available_actions": log['available_actions']
+            })
+            
+    return logs_data

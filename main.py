@@ -4,9 +4,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from routes.user import router as user_router
 from routes.echo import router as echo_router
 
-app = FastAPI()
+app = FastAPI(
+    title="Echo Chronicles API",
+    description="API for Echo Chronicles",
+    version="0.1.0",
+)
 
-# Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # Allows all origins
@@ -15,7 +18,7 @@ app.add_middleware(
     allow_headers=["*"],  # Allows all headers
 )
 
-@app.get("/")
+@app.get("/", include_in_schema=False)
 def read_root():
     return RedirectResponse(url="/docs")
 
