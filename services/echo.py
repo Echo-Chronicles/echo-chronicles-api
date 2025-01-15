@@ -65,6 +65,7 @@ def prompt_generator(prompts: str, role: str, username: str):
     print("====================================")
     available_actions = re.findall(
         regex_available_actions, response, re.DOTALL)
+    available_actions_split = available_actions[0].split("\n")
     print("available_actions: ", available_actions)
     print("====================================")
 
@@ -72,11 +73,12 @@ def prompt_generator(prompts: str, role: str, username: str):
         "player_id": username,
         "timestamp": datetime.now(),
         "action": prompts,
-        "description": narrative_response[0]
+        "description": narrative_response[0],
+        "available_actions": available_actions_split
     }
     connections, colls = get_mongo_client('player_logs')
     with connections:
         logs['_id'] = uuid4().hex
         colls.insert_one(logs)
 
-    return {"narrative_response": narrative_response, "available_actions": available_actions}
+    return {"narrative_response": narrative_response, "available_action": available_actions_split}
