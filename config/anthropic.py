@@ -1,8 +1,8 @@
 import anthropic
-
+from config.config import get_config
 def anthropic_client() -> anthropic.Anthropic:
     client = anthropic.Anthropic(
-        api_key="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",
+        api_key=get_config().get('ANTHROPIC_KEY')
     )
     return client
 
