@@ -4,6 +4,7 @@ from config.mongo import get_mongo_client
 from datetime import datetime
 from config.anthropic import anthropic_client, get_system_prompt
 from model.user_model import UserLogsModel
+from fastapi import HTTPException
 
 
 def prompt_generator(prompts: str, role: str, username: str):
@@ -87,17 +88,23 @@ def prompt_generator(prompts: str, role: str, username: str):
     return {"narrative_response": narrative_response, "available_action": available_actions_split}
 
 
-def get_user_history(username: str):
+def get_user_history(public_address: str, page: int = 1, limit: int = 10):
+    conn_player, colls = get_mongo_client('player_data')
+    username = ""
+    with conn_player:
+        user = colls.find_one({'public_address': public_address})
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+        username = user['nickname']
     conn, coll = get_mongo_client('player_logs')
     with conn:
         logs = coll.find({'player_id': username}).sort(
-            'timestamp', -1).limit(3)
+            'timestamp', 1).skip((page-1)*limit).limit(limit)
         logs_data = []
         for log in logs:
             logs_data.append({
-                "action": log['action'],
-                "description": log['description'],
-                "available_actions": log['available_actions']
+                "action": log['action'] if log['action'] != None else "",
+                "description": log['description'] if log['description'] != None else "",
+                "available_actions": log['available_actions'] if 'available_actions' in log else []
             })
-            
     return logs_data

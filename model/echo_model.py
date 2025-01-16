@@ -1,5 +1,5 @@
 from pydantic import BaseModel
 
 class PromptModel(BaseModel):
-    username: str
+    public_address: str
     message: str

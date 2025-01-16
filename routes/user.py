@@ -32,8 +32,8 @@ async def create_user_init(model: UserModel):
         
     
 @router.get("/history")
-async def get_user_history(username: str):
+async def get_user_history(public_address: str, page: int = 1, limit: int = 10):
     try:
-        return history(username);
+        return history(public_address, page, limit);
     except Exception as e:
         raise e
