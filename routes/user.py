@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from services.user import check_user, create_user, check_address
 from model.user_model import UserModel
-from services.user import rate_limit
+from services.user import rate_limit, check_token_amount
 from services.echo import get_user_history as history
 
 router = APIRouter(
@@ -19,6 +19,13 @@ async def check_user_init(username: str):
 async def check_address_init(address: str):
     try:
         return check_address(address)
+    except Exception as e:
+        raise e
+    
+@router.get("/check_token_amount")
+async def check_token_amount_init(public_address: str):
+    try:
+        return check_token_amount(public_address)
     except Exception as e:
         raise e
 
