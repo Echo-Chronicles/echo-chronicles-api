@@ -25,7 +25,7 @@ async def check_address_init(address: str):
 @router.get("/check_token_amount")
 async def check_token_amount_init(public_address: str):
     try:
-        return check_token_amount(public_address)
+        return check_token_amount(public_address=public_address)
     except Exception as e:
         raise e
 
@@ -39,7 +39,7 @@ async def create_user_init(model: UserModel):
         
     
 @router.get("/history")
-async def get_user_history(public_address: str, page: int = 1, limit: int = 10):
+async def get_user_history(public_address: str, page: int = 1, limit: int = 5):
     try:
         return history(public_address, page, limit);
     except Exception as e:

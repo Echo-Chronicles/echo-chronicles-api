@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from model.echo_model import PromptModel
 from services.echo import prompt_generator
-from services.user import check_user, rate_limit
+from services.user import check_user, rate_limit, check_token_amount
 from config.mongo import get_mongo_client
 from fastapi.exceptions import HTTPException
 
@@ -29,7 +29,11 @@ async def prompt(prompt_model : PromptModel):
                 raise HTTPException(status_code=404, detail="User not found")
             username = user['nickname']
         check_user(username)
-        rate_limit(username)
+        limits = rate_limit(username)
+        if not limits:
+            token_total =  check_token_amount(public_address=prompt_model.public_address)
+            if token_total < 10000:
+                raise HTTPException(status_code=429, detail="Your token amount is "+str(token_total)+". You can only make 10 requests per day.")
         return prompt_generator(prompt_model.message, "user", username)
     except Exception as e:
         raise e
