@@ -32,8 +32,11 @@ async def prompt(prompt_model : PromptModel):
         limits = rate_limit(username)
         if not limits:
             token_total =  check_token_amount(public_address=prompt_model.public_address)
-            if token_total < 10000:
-                raise HTTPException(status_code=429, detail="Your token amount is "+str(token_total)+". You can only make 10 requests per day.")
+            if token_total < 100000000:
+                raise HTTPException(status_code=429, detail={
+                    "message": "Your token amount is "+str(token_total)+". You can only make 10 requests per day.",
+                    "token": token_total
+                })
         return prompt_generator(prompt_model.message, "user", username)
     except Exception as e:
         raise e
