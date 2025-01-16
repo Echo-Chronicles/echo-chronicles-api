@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from services.user import check_user, create_user
+from services.user import check_user, create_user, check_address
 from model.user_model import UserModel
 from services.user import rate_limit
 from services.echo import get_user_history as history
@@ -15,6 +15,12 @@ router = APIRouter(
 async def check_user_init(username: str):
     return check_user(username)
 
+@router.get("/check_address")
+async def check_address_init(address: str):
+    try:
+        return check_address(address)
+    except Exception as e:
+        raise e
 
 @router.post("/create_user")
 async def create_user_init(model: UserModel):
@@ -23,6 +29,7 @@ async def create_user_init(model: UserModel):
         return create_user(model.username, model.public_address)
     except Exception as e: 
         return {"error": str(e)}
+        
     
 @router.get("/history")
 async def get_user_history(username: str):

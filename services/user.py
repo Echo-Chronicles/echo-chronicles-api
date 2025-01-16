@@ -13,6 +13,15 @@ def check_user(username: str):
             return user
         else:
             raise HTTPException(status_code=404, detail="User not found")
+        
+def check_address(address: str):
+    conn, coll = get_mongo_client('player_data')
+    with conn:
+        user = coll.find_one({'public_address': address})
+        if user:
+            return user
+        else:
+            raise HTTPException(status_code=404, detail="User not found")
 
 def create_user(username: str, public_address: str):
     conn, coll = get_mongo_client('player_data')
