@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from model.echo_model import PromptModel
-from services.echo import prompt_generator
+from services.echo import prompt_generator, update_sysprompt
 from services.user import check_user, rate_limit, check_token_amount
 from config.mongo import get_mongo_client
 from fastapi.exceptions import HTTPException
@@ -16,6 +16,10 @@ router = APIRouter(
 async def init_world():
     return {"message": "World Already Initialized"}
 
+@router.get("/update_system_prompt")
+async def update_system_prompt():
+    update_sysprompt()
+    return {"message": "System Prompt Updated"}
 
 @router.post("/prompt")
 async def prompt(prompt_model : PromptModel):
